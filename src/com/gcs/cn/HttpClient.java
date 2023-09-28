@@ -11,13 +11,13 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpClient {
 
-	private String url;
 	private String[] headers;
 	private boolean verbose;
 	private String query;
 	private String postBody;
 	private String host;
 	private String path;
+	private int port;
 	private static final int PORT = 80;
 
 	private static final int BUFFER_SIZE = 1024;
@@ -39,6 +39,7 @@ public class HttpClient {
 			this.host = strURL.getHost();
 			this.query = strURL.getQuery();
 			this.path = strURL.getPath();
+			this.port = strURL.getPort();
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -46,27 +47,38 @@ public class HttpClient {
 	}
 
 	public HttpClient(String url, String[] headers, boolean verbose) {
-		this(url, headers, verbose,null);
+		this(url, headers, verbose, null);
 	}
 
 	public void get() {
 		StringBuilder requestBuilder = new StringBuilder();
+		if(this.query == null)
+			this.query = "";
+		
         requestBuilder.append("GET ").append(path).append("?").append(query).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(host).append("\r\n")
                 .append("User-Agent: Concordia-HTTP/1.0\r\n");
         
+        if (headers != null) {
+            for (String header : headers) {
+                requestBuilder.append(header).append("\r\n");
+            }
+        }
         
         requestBuilder.append("\r\n"); // ending the request
         String request = requestBuilder.toString();
 
-        System.out.println("===========GET REQUEST===========");
+        System.out.println("***********GET REQUEST***********");
         System.out.println(request);
-        System.out.println("===========RESPONSE===========");
+        System.out.println("***********RESPONSE***********");
         sendRequestToSocket(request, host);
 	}
 	
 	private void sendRequestToSocket(String request, String host) {
-        SocketAddress endpoint = new InetSocketAddress(host, PORT);
+		if(port == -1) {
+			port = PORT;
+		}
+        SocketAddress endpoint = new InetSocketAddress(host, port);
         try (SocketChannel socket = SocketChannel.open()) {
             socket.connect(endpoint);
             //write the request in
