@@ -8,6 +8,8 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class HttpClient {
 
@@ -18,6 +20,8 @@ public class HttpClient {
 	private String host;
 	private String path;
 	private int port;
+    private boolean isPost;
+    private String file;
 	private static final int PORT = 80;
 
 	private static final int BUFFER_SIZE = 1024;
@@ -113,5 +117,61 @@ public class HttpClient {
             exception.printStackTrace();
         }
     }
+
+    public void post() {
+        isPost = true;
+        StringBuilder reqBuilder = new StringBuilder();
+        if (query == null) {
+            query = "";
+        }
+        reqBuilder.append("POST ").append(path).append("?").append(query).append(" HTTP/1.1\r\n")
+                .append("Host: ").append(host).append("\r\n")
+                .append("User-Agent: Concordia-HTTP/1.0\r\n");
+
+        if (headers != null) {
+            for (String header : headers) {
+                reqBuilder.append(header.strip()).append("\r\n");
+            }
+        }
+
+        if (file != null) {
+            Path filePath = Path.of(file);
+            try {
+                //instead of file content save it back to file
+                file = Files.readString(filePath)
+                        .replace("\n", "");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (postBody != null) {
+            reqBuilder.append("Content-Length: ").append(postBody.length()).append("\r\n");
+        }
+        if (file != null) {
+            reqBuilder.append("Content-Length: ").append(file.length()).append("\r\n");
+        }
+        //Ending of the request header
+        reqBuilder.append("\r\n");
+
+
+        //Add the postBody
+        if (postBody != null) {
+            reqBuilder.append(postBody);
+        }
+        if (file != null) {
+            reqBuilder.append(file);
+        }
+
+        System.out.println("***********POST REQUEST***********");
+        String request = reqBuilder.toString();
+        System.out.println(request);
+        System.out.println();
+        System.out.println("***********RESPONSE***********");
+        sendRequestToSocket(request, host);
+
+    }
+
 	
 }
