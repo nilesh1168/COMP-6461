@@ -1,5 +1,6 @@
 package com.gcs.cn;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -10,6 +11,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class HttpClient {
 
@@ -22,6 +24,7 @@ public class HttpClient {
 	private int port;
     private boolean isPost;
     private String file;
+	private String outputFile;
 	private static final int PORT = 80;
 
 	private static final int BUFFER_SIZE = 1024;
@@ -29,10 +32,11 @@ public class HttpClient {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public HttpClient(String url, String[] headers, boolean verbose, String postBody) {
+	public HttpClient(String url, String[] headers, boolean verbose, String postBody, String oPFile) {
 		this.headers = headers;
 		this.verbose = verbose;
 		this.postBody = postBody;
+		this.outputFile = oPFile;
 		parseURL(url);
 	}
 
@@ -50,8 +54,8 @@ public class HttpClient {
 		}
 	}
 
-	public HttpClient(String url, String[] headers, boolean verbose) {
-		this(url, headers, verbose, null);
+	public HttpClient(String url, String[] headers, boolean verbose, String opFile) {
+		this(url, headers, verbose, null, opFile);
 	}
 
 	public void get() {
@@ -106,7 +110,11 @@ public class HttpClient {
                         System.out.println(lines[0]);
                         System.out.println();
                     }
+                    else if (outputFile != null) {
+                        saveResponseIntoOutputFile(lines[1]);
+                    }
                     System.out.println(lines[1]);
+                    
 
                 }
 
@@ -118,7 +126,26 @@ public class HttpClient {
         }
     }
 
-    public void post() {
+    private void saveResponseIntoOutputFile(String line) {
+    	try {
+            Path directory = Files.createDirectories(Paths.get("Downloads"));
+            Path filePath = Paths.get("Downloads" + "/" + outputFile);
+            Path file;
+            if (!Files.exists(filePath)) {
+                file = Files.createFile(filePath);
+            } else {
+                file = filePath;
+            }
+            FileWriter fileWriter = new FileWriter(file.toString());
+            fileWriter.write(line);
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+	}
+
+	public void post() {
         isPost = true;
         StringBuilder reqBuilder = new StringBuilder();
         if (query == null) {

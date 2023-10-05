@@ -43,6 +43,7 @@ public class HttpcUtil {
 		ArrayList<String> args = new ArrayList<>(subList);
 		String[] headers = null;
 		boolean verbose = false;
+		String outputFile = null;
 		
 		if (args.contains("-v")) {
 			args.remove("-v");
@@ -55,9 +56,15 @@ public class HttpcUtil {
 			args.remove(headerLine);
 			headers = headerLine.split(",");
 		}
+		if(args.contains("-o")){
+            int index = args.indexOf("-o");
+            args.remove("-o");
+            outputFile = args.get(index);
+            args.remove(outputFile);
+        }
 		
 		if(args.size() >= 1) {
-			HttpClient client = new HttpClient(args.get(0), headers, verbose);
+			HttpClient client = new HttpClient(args.get(0), headers, verbose, outputFile);
 			client.get();
 		}else {
 			System.out.println("Something went wrong, with input. Please check and try again");
