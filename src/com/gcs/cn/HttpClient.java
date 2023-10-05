@@ -20,14 +20,22 @@ public class HttpClient {
 	private String host;
 	private String path;
 	private int port;
-    private boolean isPost;
     private String file;
+    private boolean isPost;
+    // private String outputFile;
+    // private boolean redirectionAllowed;
 	private static final int PORT = 80;
 
 	private static final int BUFFER_SIZE = 1024;
-	public HttpClient() {
-		// TODO Auto-generated constructor stub
-	}
+	// public HttpClient(String url, String[] headers, boolean isVerbose, String postBody, String file, String outputFile, boolean redirectionAllowed) {
+	// 	this.verbose = isVerbose;
+    //     this.file = file;
+    //     this.outputFile = outputFile;
+    //     this.redirectionAllowed = redirectionAllowed;
+    //     this.headers = headers;
+    //     this.postBody = postBody;
+    //     parseURL(url);
+	// }
 	
 	public HttpClient(String url, String[] headers, boolean verbose, String postBody) {
 		this.headers = headers;
@@ -158,6 +166,7 @@ public class HttpClient {
 
         //Add the postBody
         if (postBody != null) {
+            reqBuilder.append(postBody);
             reqBuilder.append(postBody);
         }
         if (file != null) {

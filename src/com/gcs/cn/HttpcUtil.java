@@ -66,8 +66,59 @@ public class HttpcUtil {
 	}
 
 	public static void parsePOST(List<String> subList) {
-		// TODO Auto-generated method stub
+		ArrayList<String> args = new ArrayList<>(subList);
+        String file = null;
+        String postBody = null;
+        String[] headers = null;
+        boolean verbose = false;
+        // boolean redirectionAllowed = false;
+        // String outputFile = null;
 
+        if(args.contains("-d") && args.contains("-f")){
+            System.out.println("You can use either [-d] or [-f] but not both");
+        }else {
+            if(args.contains("-v")){
+                args.remove("-v");
+                verbose = true;
+            }
+            if(args.contains("-h")){
+                int index = args.indexOf("-h");
+                args.remove("-h");
+                String headerLine = args.get(index);
+                args.remove(headerLine);
+                headers = headerLine.split(",");
+            }
+            if(args.contains("-r")){
+                args.remove("-r");
+                // redirectionAllowed = true;
+            }
+            if(args.contains("-d")){
+                int index = args.indexOf("-d");
+                args.remove("-d");
+                postBody = args.get(index);
+                args.remove(postBody);
+            }
+            if(args.contains("-f")){
+                int index = args.indexOf("-f");
+                args.remove("-f");
+                file = args.get(index);
+                args.remove(file);
+            }
+            if(args.contains("-o")){
+                int index = args.indexOf("-o");
+                args.remove("-o");
+                // outputFile = args.get(index);
+                // args.remove(outputFile);
+            }
+
+            if(args.size() >= 1){
+				HttpClient client = new HttpClient(args.get(0), headers, verbose);
+//                HttpClient client = new HttpClient(args.get(0), headers, verbose, postBody, file, outputFile, redirectionAllowed);
+                client.post();
+            }else {
+                System.out.println("Something went wrong, with input. Please check and try again");
+            }
+        }
 	}
 
 }
