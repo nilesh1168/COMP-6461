@@ -22,15 +22,14 @@ public class HttpClient {
 	private String host;
 	private String path;
 	private int port;
-    private boolean isPost;
     private String file;
 	private String outputFile;
+    private boolean isPost;
+
+
 	private static final int PORT = 80;
 
 	private static final int BUFFER_SIZE = 1024;
-	public HttpClient() {
-		// TODO Auto-generated constructor stub
-	}
 	
 	public HttpClient(String url, String[] headers, boolean verbose, String postBody, String oPFile) {
 		this.headers = headers;
@@ -185,6 +184,7 @@ public class HttpClient {
 
         //Add the postBody
         if (postBody != null) {
+            reqBuilder.append(postBody);
             reqBuilder.append(postBody);
         }
         if (file != null) {
