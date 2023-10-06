@@ -23,7 +23,7 @@ cURL like command implementation
 3. Open a terminal/command prompt at the above mentioned location.
 4. In the terminal/ command prompt you can use the cURL command like utility (httpc). See the command <a href="#example-section">example section</a>.
 
-**Note:** Make sure you create a file.json at Computer-Networks/bin to be able to test the -f option for post.
+**Note:** Make sure you create a file.json with {'Assignment':'One'} at Computer-Networks/bin to be able to test the -f option for post.
 
 If you import the project into an IDE (Eclipse preferred) follow the below steps:
 1. In Eclipse IDE select the Run option from the Menu Bar, followed by Run Configurations.
@@ -42,7 +42,7 @@ If you import the project into an IDE (Eclipse preferred) follow the below steps
 - post -h Content-Type:application/json -f file.json http://httpbin.org/post
 5. Next, Apply -> Run.
 
-**Note:** Make sure you create a file.json at top level in the IDE. For example
+**Note:** Make sure you create a file.json with {'Assignment':'One'} at top level in the IDE. For example
 
 |- bin
 
