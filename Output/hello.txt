@@ -1,0 +1,21 @@
+HTTP/1.1 200 OK
+Date: Fri, 06 Oct 2023 00:02:07 GMT
+Content-Type: application/json
+Content-Length: 325
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+{
+  "args": {
+    "assignment": "1", 
+    "course": "networking"
+  }, 
+  "headers": {
+    "Host": "httpbin.org", 
+    "User-Agent": "Concordia-HTTP/1.0", 
+    "X-Amzn-Trace-Id": "Root=1-651f4e7f-666979832cd8f7606c2370d5"
+  }, 
+  "origin": "132.205.229.91", 
+  "url": "http://httpbin.org/get?course=networking&assignment=1"
+}

@@ -1,5 +1,10 @@
 package com.gcs.cn;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +49,7 @@ public class HttpcUtil {
 		String[] headers = null;
 		boolean verbose = false;
 		String outputFile = null;
+		boolean isRedirect = false;
 		
 		if (args.contains("-v")) {
 			args.remove("-v");
@@ -62,16 +68,43 @@ public class HttpcUtil {
             outputFile = args.get(index);
             args.remove(outputFile);
         }
+		 if(args.contains("-r")){
+	            args.remove("-r");
+	            isRedirect = true;
+	        }
 		
 		if(args.size() >= 1) {
-			HttpClient client = new HttpClient(args.get(0), headers, verbose, outputFile);
+			HttpClient client = new HttpClient(args.get(0), headers, verbose, outputFile, isRedirect);
 			client.get();
 		}else {
 			System.out.println("Something went wrong, with input. Please check and try again");
 		}
-
 	}
 
+	public static boolean isRedirect(String[] response) {
+        String[] headers = response[0].split("\r\n");
+        String responseCode = headers[0].split("\\s+")[1];
+        return responseCode.startsWith("3");
+    }
+	
+	public static void saveResponseIntoOutputFile(String line, String outputFile) {
+		try {
+			Files.createDirectories(Paths.get("Output"));
+			Path filePath = Paths.get("Output" + "/" + outputFile);
+			Path file;
+			if (!Files.exists(filePath)) {
+				file = Files.createFile(filePath);
+			} else {
+				file = filePath;
+			}
+			FileWriter fileWriter = new FileWriter(file.toString());
+			fileWriter.write(line);
+			fileWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 	public static void parsePOST(List<String> subList) {
 		ArrayList<String> args = new ArrayList<>(subList);
         String file = null;
@@ -79,6 +112,7 @@ public class HttpcUtil {
         String[] headers = null;
         boolean verbose = false;
         String outputFile = null;
+        boolean redirectionAllowed = false;
 
         if(args.contains("-d") && args.contains("-f")){
             System.out.println("You can use either [-d] or [-f] but not both");
@@ -96,7 +130,7 @@ public class HttpcUtil {
             }
             if(args.contains("-r")){
                 args.remove("-r");
-                // redirectionAllowed = true;
+                redirectionAllowed = true;
             }
             if(args.contains("-d")){
                 int index = args.indexOf("-d");
@@ -118,7 +152,7 @@ public class HttpcUtil {
             }
 
             if(args.size() >= 1){
-				HttpClient client = new HttpClient(args.get(0), headers, verbose, outputFile);
+				HttpClient client = new HttpClient(args.get(0), headers, verbose, postBody, outputFile, redirectionAllowed, file);
                 client.post();
             }else {
                 System.out.println("Something went wrong, with input. Please check and try again");

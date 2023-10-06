@@ -1,0 +1,18 @@
+{
+  "args": {}, 
+  "data": "{\"Assignment\": 1}", 
+  "files": {}, 
+  "form": {}, 
+  "headers": {
+    "Content-Length": "17", 
+    "Content-Type": "application/json", 
+    "Host": "httpbin.org", 
+    "User-Agent": "Concordia-HTTP/1.0", 
+    "X-Amzn-Trace-Id": "Root=1-651f4e70-45ab4f072dffc3936f5cf000"
+  }, 
+  "json": {
+    "Assignment": 1
+  }, 
+  "origin": "132.205.229.91", 
+  "url": "http://httpbin.org/post"
+}
