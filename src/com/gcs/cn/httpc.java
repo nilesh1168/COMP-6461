@@ -19,6 +19,5 @@ public class httpc {
 			List<String> argsL = Arrays.asList(args);
 			HttpcUtil.parsePOST(argsL.subList(1, argsL.size()));
 		}
-		
 	}
 }
